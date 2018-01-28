@@ -36,6 +36,8 @@
  *              08/04/16 OH     Fixed the GPL statement and old user-id
  *              09/30/16 MAS    Added the --inhibit-alarms option
  *              05/30/17 RSB	Added --initialize-sunburst-37 option.
+ *              01/28/18 MAS	Removed help text stating that only ropes
+ *                          	with 36 banks are expected/supported.
  */
 
 #include <string.h>
