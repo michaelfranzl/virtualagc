@@ -129,6 +129,8 @@
 		01/31/18 MAS	Added state fields for radar simulation, as well
 				as defines for interrupt indexes.
 		02/01/18 MAS	Added state fields for gyro drive simulation.
+		02/01/18 MAS	Added state fields for gyro drive and CDU drive
+				simulation.
 		02/11/20 TVB	Disabled a compiler warning under MSC for some stdio
 				functions that are safe for us to use.
 
@@ -549,6 +551,7 @@ typedef struct
   uint8_t RadarGateCounter;
   uint16_t RadarData;
   uint16_t GyroDriveOut;
+  int CduDriveOut[5];
   // The following pointer is present for whatever use the Orbiter
   // integration squad wants.  The Virtual AGC code proper doesn't use it
   // in any way.
