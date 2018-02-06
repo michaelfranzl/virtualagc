@@ -100,6 +100,8 @@
  *                              state info.
  * 		02/01/18 MAS	Added initialization for THRUST and EMSD counter
  *                              state info.
+ * 		02/01/18 MAS	Added initialization for OUTLINK and ALTM counter
+ *                              state info.
  * 		05/13/21 MKF	Disabled UnblockSocket for the WASI target
  * 				(there are no sockets in wasi-libc)
  */
@@ -367,6 +369,15 @@ agc_engine_init (agc_t * State, const char *RomImage, const char *CoreDump,
   State->EMSPlusActive = 0;
   State->EMSMinusActive = 0;
   State->EMSOut = 0;
+
+  State->OutlinkActive = 0;
+  State->OutlinkStarting = 0;
+  State->OutlinkOut = 0;
+
+  State->AltActive = 0;
+  State->AltStarting = 0;
+  State->AltOut = 0;
+  State->AltRateOut = 0;
 
   if (initializeSunburst37)
     {
