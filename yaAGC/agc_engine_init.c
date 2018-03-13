@@ -354,7 +354,6 @@ agc_engine_init (agc_t * State, const char *RomImage, const char *CoreDump,
     }
 
   State->RadarGateCounter = 0;
-  State->RadarData = 0;
   State->RadarSync = 0;
 
   State->GyroDriveActive = 0;
