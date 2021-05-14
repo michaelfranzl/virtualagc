@@ -100,7 +100,7 @@ yaYUL:	$(CFILES:%.c=%.o)
 	${cc} ${CFLAGS} -o $@ $^ -lm
 
 yaYUL.exe: ${CFILES}
-	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER=${NVER} \
+	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER="\"${NVER}\"" \
 		-Wall -o $@ $^ -lm
 
 yaYUL.wasm: $(CFILES:%.c=%.o)
@@ -112,7 +112,7 @@ yaYUL.wast: yaYUL.wasm
 	wasm2wat $< > $@
 
 yaYUL-macosx: ${CFILES}
-	$(PREFIX_MAC)${cc} -arch ppc -arch i386 ${CFLAGS} -DNVER=${NVER} -Wall -o $@ $^ -lm
+	$(PREFIX_MAC)${cc} -arch ppc -arch i386 ${CFLAGS} -DNVER="\"${NVER}\"" -Wall -o $@ $^ -lm
 
 clean:
 	-rm -f yaYUL *.o *.bc *~ *.exe *-macosx Utilities/SplitInterp Utilities/*.exe yaYUL.wasm yaYUL.wast
@@ -123,8 +123,8 @@ install: yaYUL
 
 %.o: %.c yaYUL.h
 ifdef WASI
-	${WASI_SDK_PATH}/bin/clang ${CFLAGS2} -DNVER=${NVER} -c -o $@ $<
+	${WASI_SDK_PATH}/bin/clang ${CFLAGS2} -DNVER="\"${NVER}\"" -c -o $@ $<
 else
-	${cc} ${CFLAGS} -g -O0 -DNVER=${NVER} -DINSTALLDIR=${PREFIX} -Wall -c -o $@ $<
+	${cc} ${CFLAGS} -g -O0 -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX} -Wall -c -o $@ $<
 endif
 	

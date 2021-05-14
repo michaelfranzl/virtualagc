@@ -102,7 +102,7 @@ SOURCESc:=\
 HEADERS:=${APP}.h
 
 ${APP}: ${SOURCES} ${SOURCESc} ${HEADERS}
-	${CC} -DNVER=${NVER} ${MACFLAG} \
+	${CC} -DNVER="\"${NVER}\"" ${MACFLAG} \
 		`wx-config --cxxflags` ${wxFLAGS} \
 		-o $@ ${SOURCES} ${DASHX} ${SOURCESc} \
 		`wx-config --libs` \

@@ -21,22 +21,22 @@ default: ${TARGETS}
 	# $(MAKE) -C boxAGC
 
 listing2binsource: listing2binsource.c utils.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 oct2bin: oct2bin.c utils.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 checkdec: checkdec.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 bdiffhead: bdiffhead.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 webb2burkey-rope: webb2burkey-rope.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 split-interp: split-interp.c
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX}/bin -DMAIN_PROGRAM -o $@ $^ -lm
 
 clean:
 	-rm -f ${TARGETS} *.o *.exe *-macosx 

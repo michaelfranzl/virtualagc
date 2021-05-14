@@ -99,7 +99,7 @@ SOURCESc:=\
 HEADERS:=${APP}.h
 
 ${APP}: ${SOURCES} ${SOURCESc} ${HEADERS}
-	${CC} -DNVER=${NVER} \
+	${CC} -DNVER="\"${NVER}\"" \
 		`wx-config --cxxflags` ${wxFLAGS} \
 		-o $@ ${SOURCES} ${DASHX} ${SOURCESc} \
 		`wx-config --libs` \

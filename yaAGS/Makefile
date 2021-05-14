@@ -119,7 +119,7 @@ install:	yaAGS
 	chmod ugo+x ${PREFIX}/bin/yaAGS
 
 %.o:	%.c aea_engine.h
-	${cc} -g ${CFLAGS} ${CFLAGS2} -DNVER=${NVER} -I../yaAGC -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
+	${cc} -g ${CFLAGS} ${CFLAGS2} -DNVER="\"${NVER}\"" -I../yaAGC -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
 
 #----------------------------------------------------------------------------------
 # Building for multiple architectures, using IMCROSS.  Since IMCROSS presently
@@ -136,7 +136,7 @@ CSOURCE:=mainAGS.c aea_engine_init.c aea_engine.c DebuggerHookAGS.c SocketAPI_AG
 
 yaAGS.exe: ${CSOURCE} ../yaAGC/regex.c ../yaAGC/random.c
 	i386-mingw32-${cc} -DSTDC_HEADERS  -DPTW32_STATIC_LIB \
-		${CFLAGS} ${CFLAGS2_WIN32} -DNVER=${NVER} -I../yaAGC \
+		${CFLAGS} ${CFLAGS2_WIN32} -DNVER="\"${NVER}\"" -I../yaAGC \
 		-o $@ $^ -L. ${LIBS0} -lreadline ${CURSESLIB} \
 		-lpthreadGC2-static -lkernel32 -lwsock32
 
@@ -144,7 +144,7 @@ MACDIR:=${HOME}/IMCROSS/mac
 yaAGS-macosx: ${CSOURCE}
 	powerpc-apple-darwin9-${cc} -arch ppc -arch i386 -DSTDC_HEADERS \
 		-I${MACDIR}/include -L${MACDIR}/lib \
-		${CFLAGS} ${CFLAGS2} -DNVER=${NVER} -I ../yaAGC \
+		${CFLAGS} ${CFLAGS2} -DNVER="\"${NVER}\"" -I ../yaAGC \
 		-o $@ $^ ${MACDIR}/lib/libreadline.a -L. ${LIBS0} -lpthread -lm \
 		${CURSESLIB}
 

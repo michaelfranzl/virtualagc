@@ -72,6 +72,6 @@ clean:
 		*.o *.bin *.lst *.io *~
 
 %.o:	%.c ../yaYUL/yaYUL.h
-	${cc} ${CFLAGS} -DNVER=${NVER} -c -o $@ $<
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -c -o $@ $<
 	
 

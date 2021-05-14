@@ -437,7 +437,7 @@ VirtualAGC.tar.bz2: temp/lVirtualAGC
 
 CURDIR:=$(shell pwd)
 VirtualAGC-installer: temp/lVirtualAGC
-	sed "s/APPLICATION_VERSION/${NVER}/;s@/home/.*/VirtualAGC/temp/@${CURDIR}/temp/@" \
+	sed "s/APPLICATION_VERSION/"\"${NVER}\""/;s@/home/.*/VirtualAGC/temp/@${CURDIR}/temp/@" \
 		VirtualAGC-linux/VirtualAGC-linux.mpi \
 		>VirtualAGC-linux/temp.mpi
 	cd VirtualAGC-linux && \
@@ -450,7 +450,7 @@ VirtualAGC.zip: temp/VirtualAGC
 	cd temp && zip -r ../$@ VirtualAGC
 
 VirtualAGC-setup.exe: temp/VirtualAGC
-	sed "s/APPLICATION_VERSION/${NVER}/;s@/home/.*/VirtualAGC/temp/@${CURDIR}/temp/@" \
+	sed "s/APPLICATION_VERSION/"\"${NVER}\""/;s@/home/.*/VirtualAGC/temp/@${CURDIR}/temp/@" \
 		VirtualAGC-win32/VirtualAGC-win32.mpi \
 		>VirtualAGC-win32/temp.mpi
 	cd VirtualAGC-win32 && \

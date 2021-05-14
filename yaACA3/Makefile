@@ -102,7 +102,7 @@ SOURCES:=${APPNAME}.c \
 ${APPNAME}: ${SOURCES} ${HEADERS}
 	${cc} \
 		${NATIVE_SDL_CFLAGS} \
-		-DNVER=${NVER} ${CFLAGS0} \
+		-DNVER="\"${NVER}\"" ${CFLAGS0} \
 		-o $@ ${SOURCES} ${WINFLAGS} \
 		${NATIVE_SDL_LIBS} \
 		${CURSES} ${LIBS2}
@@ -111,7 +111,7 @@ ${APPNAME}: ${SOURCES} ${HEADERS}
 ${APPNAME}.exe: ${SOURCES} ../yaAGC/random.c ${HEADERS}
 	${PREFIX_WIN}-${cc} \
 		${WIN_SDL_CFLAGS} \
-		-DNVER=${NVER} \
+		-DNVER="\"${NVER}\"" \
 		-o $@ ${SOURCES} ../yaAGC/random.c -lwsock32 \
 		${WIN_SDL_LIBS}
 	${PREFIX_WIN}-strip $@
@@ -122,7 +122,7 @@ ${APPNAME}-macosx: ${SOURCES} ${HEADERS}
 		-I${SDK_MAC}/usr/include/c++/4.0.0 \
 		-I${SDK_MAC}/usr/include/c++/4.0.0/powerpc-apple-darwin9 \
 		${MAC_SDL_CFLAGS} \
-		-DNVER=${NVER} \
+		-DNVER="\"${NVER}\"" \
 		-o $@ ${SOURCES} \
 		${MAC_SDL_LIBS}
 	${PREFIX_MAC}-strip $@

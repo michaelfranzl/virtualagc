@@ -64,7 +64,7 @@ SOURCES:=${APP}.cpp
 HEADERS:=${APP}.h
 
 ${APP}: ${SOURCES} ${HEADERS}
-	${CC} -DNVER=${NVER} -Wall \
+	${CC} -DNVER="\"${NVER}\"" -Wall \
 		`wx-config --cxxflags` \
 		-o $@ ${SOURCES} \
 		`wx-config --libs`

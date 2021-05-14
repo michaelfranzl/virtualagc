@@ -51,10 +51,10 @@ yaUniverse: $(CFILES:%.c=%.o)
 	${cc} ${CFLAGS} -o $@ $^ -L../yaAGC -lyaAGC -lm
 
 yaUniverse.exe: ${CFILES} ../yaAGC/rfopen.c
-	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER=${NVER} -Wall -o $@ $^ -lm
+	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -Wall -o $@ $^ -lm
 
 yaUniverse-macosx: ${CFILES} ../yaAGC/rfopen.c
-	$(PREFIX_MAC)${cc} -arch ppc -arch i386 ${CFLAGS} -DNVER=${NVER} \
+	$(PREFIX_MAC)${cc} -arch ppc -arch i386 ${CFLAGS} -DNVER="\"${NVER}\"" \
 		-Wall -o $@ $^ -lm
 
 clean:
@@ -66,6 +66,6 @@ install: yaUniverse
 	-cp Ephemeris*.txt ${PREFIX}/bin
 
 %.o:	%.c yaUniverse.h
-	${cc} ${CFLAGS} -DNVER=${NVER} -DINSTALLDIR=${PREFIX} -Wall -c -o $@ $<
+	${cc} ${CFLAGS} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX} -Wall -c -o $@ $<
 	
 

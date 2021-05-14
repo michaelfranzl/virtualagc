@@ -233,7 +233,7 @@
 # 	"make FORCE_clang=yes FORCE_cc=/usr/bin/clang-3.9 FORCE_CC=/usr/bin/clang++-3.9".
 
 # NVER is the overall version code for the release.
-NVER:=\\\"2020-12-24\\\"
+NVER:=2020-12-24
 DATE:=`date +%Y%m%d`
 
 # DON'T CHANGE THE FOLLOWING SWITCH *********************************
@@ -453,7 +453,7 @@ PREFIX=/usr/local
 endif
 
 LIBS2+=$(LIBS)
-BUILD = $(MAKE) PREFIX=$(PREFIX) NVER=$(NVER) CFLAGS="$(CFLAGS)" CURSES="$(CURSES)" LIBS2="$(LIBS2)" NOREADLINE=$(NOREADLINE) ReadlineForWin32=$(ReadlineForWin32) $(ARCHS) EXT=$(EXT)
+BUILD = $(MAKE) PREFIX=$(PREFIX) NVER="$(NVER)" CFLAGS="$(CFLAGS)" CURSES="$(CURSES)" LIBS2="$(LIBS2)" NOREADLINE=$(NOREADLINE) ReadlineForWin32=$(ReadlineForWin32) $(ARCHS) EXT=$(EXT)
 
 # List of mission software directories to be built.
 MISSIONS = Validation Zerlina56 Luminary131 Colossus249 Comanche055 

@@ -239,13 +239,13 @@ install:	yaAGC
 	chmod ugo+x ${PREFIX}/bin/yaAGC
 
 checkdec.o: ../Tools/checkdec.c
-	${cc} ${CFLAGS} ${CFLAGS2} -O0 -DNVER=${NVER} -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
+	${cc} ${CFLAGS} ${CFLAGS2} -O0 -DNVER="\"${NVER}\"" -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
 
 %.o:	%.c agc_engine.h
 ifdef WASI
 	${WASI_SDK_PATH}/bin/clang ${CFLAGS2} -c -o $@ $<
 else
-	${cc} ${CFLAGS0} ${CFLAGS2} -DNVER=${NVER} -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
+	${cc} ${CFLAGS0} ${CFLAGS2} -DNVER="\"${NVER}\"" -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
 endif
 
 #----------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ CSOURCE:=$(patsubst %.o,%.c,${OBJECTS} ${LIBOBJECTS}) ../Tools/checkdec.c
 
 yaAGC.exe: ${CSOURCE} random.c
 	i386-mingw32-${cc} \
-		${CFLAGS} ${CFLAGS2_WIN32} -DNVER=${NVER} \
+		${CFLAGS} ${CFLAGS2_WIN32} -DNVER="\"${NVER}\"" \
 		 -DPTW32_STATIC_LIB -DPCRE_STATIC \
 		`${HOME}/IMCROSS/i386-mingw32/bin/pcre-config --cflags-posix` \
 		-o $@ $^ -L. ${LIBS} ${CURSESLIB} -lpthreadGC2-static -lm -lwsock32 \
@@ -274,7 +274,7 @@ MACDIR:=${HOME}/IMCROSS/mac
 yaAGC-macosx: ${CSOURCE}
 	powerpc-apple-darwin9-${cc} -arch ppc -arch i386 \
 		-I${MACDIR}/include \
-		${CFLAGS} ${CFLAGS2} -DNVER=${NVER} \
+		${CFLAGS} ${CFLAGS2} -DNVER="\"${NVER}\"" \
 		-o $@ $^ -L${MACDIR}/lib -L. ${LIBS} -lpthread -lm ${CURSESLIB}
 
 ifdef COLDFIRE

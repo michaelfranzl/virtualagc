@@ -130,6 +130,6 @@ install: default
 	
 
 %.o:	%.c ../yaYUL/yaYUL.h
-	${cc} ${CFLAGS0} -DNVER=${NVER} -DINSTALLDIR=${PREFIX} -c -o $@ $<
+	${cc} ${CFLAGS0} -DNVER="\"${NVER}\"" -DINSTALLDIR=${PREFIX} -c -o $@ $<
 	
 
