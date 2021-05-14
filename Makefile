@@ -233,7 +233,8 @@
 # 	"make FORCE_clang=yes FORCE_cc=/usr/bin/clang-3.9 FORCE_CC=/usr/bin/clang++-3.9".
 
 # NVER is the overall version code for the release.
-NVER:=2020-12-24
+GIT_REVISION=$(shell git describe --dirty --always --tags)
+NVER:=2020-12-24 ${GIT_REVISION}
 DATE:=`date +%Y%m%d`
 
 # DON'T CHANGE THE FOLLOWING SWITCH *********************************
