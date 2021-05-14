@@ -103,7 +103,7 @@ yaYUL.exe: ${CFILES}
 	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER="\"${NVER}\"" \
 		-Wall -o $@ $^ -lm
 
-yaYUL.wasm: $(CFILES:%.c=%.o)
+yaYUL.wasm: $(CFILES:%.c=%.o) version.o
 	${WASI_SDK_PATH}/bin/wasm-ld ${LDFLAGS2} -o $@ $^
 	wasm-opt $@ -Oz -o $@
 	wasm-strip $@

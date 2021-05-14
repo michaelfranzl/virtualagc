@@ -212,7 +212,7 @@ yaAGC:	$(OBJECTS) checkdec.o libyaAGC.a ${NATIVE_WINAGC}
 	${cc} ${CFLAGS} ${CFLAGS2_NATIVE} -o yaAGC ${OBJECTS} checkdec.o \
 	libyaAGC.a -L. ${STATIC} ${LIBS} -lpthread -lyaAGC -lm ${CURSES}
 
-yaAGC.wasm: wasm.o agc_engine.o agc_engine_init.o agc_utilities.o ringbuffer_api.o ringbuffer.o
+yaAGC.wasm: wasm.o agc_engine.o agc_engine_init.o agc_utilities.o ringbuffer_api.o ringbuffer.o version.o
 	${WASI_SDK_PATH}/bin/wasm-ld ${LDFLAGS2} -o $@ $^
 	wasm-opt $@ -Oz -o $@
 	wasm-strip $@
@@ -243,7 +243,7 @@ checkdec.o: ../Tools/checkdec.c
 
 %.o:	%.c agc_engine.h
 ifdef WASI
-	${WASI_SDK_PATH}/bin/clang ${CFLAGS2} -c -o $@ $<
+	${WASI_SDK_PATH}/bin/clang -DNVER="\"${NVER}\"" ${CFLAGS2} -c -o $@ $<
 else
 	${cc} ${CFLAGS0} ${CFLAGS2} -DNVER="\"${NVER}\"" -DINSTALLDIR="\"${PREFIX}/bin\"" -c -o $@ $<
 endif
