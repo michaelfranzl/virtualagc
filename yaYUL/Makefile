@@ -34,6 +34,7 @@
 #					YAYUL_TRACE=-DYAYUL_TRACE make
 #				(from Linux, anyway).
 #		2016-08-19 RSB	Didn't do that quite right.
+#		2021-05-13 MKF	Defined WASI and targets yaYUL.wasm, yaYUL.wast
 
 ifndef PREFIX
 PREFIX=/usr/local
@@ -60,10 +61,38 @@ endif
 CFLAGS += ${YAYUL_TRACE}
 
 .PHONY: default
+ifdef WASI
+default: $(EXENAME).wasm
+else
 default: $(EXENAME)
+endif
+
+ifdef WASI
+WASI_SDK_PATH ?= /opt/wasi-sdk
+
+CFLAGS2 = \
+  --target=wasm32-wasi \
+  --sysroot ${WASI_SDK_PATH}/share/wasi-sysroot \
+  -DWASI=yes \
+  -O3 \
+  -flto
+
+LDFLAGS2 = \
+  --no-entry \
+  --export-dynamic \
+  --export=malloc \
+  --export=free \
+  --import-memory \
+  --unresolved-symbols=import-functions \
+  -L ${WASI_SDK_PATH}/share/wasi-sysroot/lib/wasm32-wasi \
+  -L ${WASI_SDK_PATH}/lib/clang/12.0.0/lib/wasi \
+  -lc \
+  -lclang_rt.builtins-wasm32 \
+  --lto-O3
+endif
 
 .PHONY: all-archs
-all-archs: default yaYUL.exe yaYUL-macosx
+all-archs: default yaYUL.exe yaYUL-macosx yaYUL.wasm
 
 CFILES:=$(wildcard *.c)
 
@@ -74,17 +103,28 @@ yaYUL.exe: ${CFILES}
 	$(PREFIX_WIN)${cc} ${CFLAGS} -DNVER=${NVER} \
 		-Wall -o $@ $^ -lm
 
+yaYUL.wasm: $(CFILES:%.c=%.o)
+	${WASI_SDK_PATH}/bin/wasm-ld ${LDFLAGS2} -o $@ $^
+	wasm-opt $@ -Oz -o $@
+	wasm-strip $@
+
+yaYUL.wast: yaYUL.wasm
+	wasm2wat $< > $@
+
 yaYUL-macosx: ${CFILES}
 	$(PREFIX_MAC)${cc} -arch ppc -arch i386 ${CFLAGS} -DNVER=${NVER} -Wall -o $@ $^ -lm
 
 clean:
-	-rm -f yaYUL *.o *~ *.exe *-macosx Utilities/SplitInterp Utilities/*.exe
+	-rm -f yaYUL *.o *.bc *~ *.exe *-macosx Utilities/SplitInterp Utilities/*.exe yaYUL.wasm yaYUL.wast
 
 install: yaYUL
 	cp  yaYUL ${PREFIX}/bin
 	chmod ugo+x ${PREFIX}/bin/yaYUL
 
 %.o: %.c yaYUL.h
+ifdef WASI
+	${WASI_SDK_PATH}/bin/clang ${CFLAGS2} -DNVER=${NVER} -c -o $@ $<
+else
 	${cc} ${CFLAGS} -g -O0 -DNVER=${NVER} -DINSTALLDIR=${PREFIX} -Wall -c -o $@ $<
+endif
 	
-

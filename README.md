@@ -292,6 +292,24 @@ run:
 
 This will produce `yaAGC.wast` (about 900 kB).
 
+### yaYUL
+
+If you have any leftover build artifacts in the `yaYUL` directory, run
+`make clean` in it.
+
+To build, simply `cd` into the root directory and do:
+
+`WASI=yes make yaYUL`
+
+This will produce `yaYUL.wasm` (about 355 kB).
+
+To additionally get a text representation, go into the `yaYUL` directory and
+run:
+
+`make yaYUL.wast`
+
+This will produce `yaYUL.wast` (about 2.1 MB).
+
 
 # Endnotes
 

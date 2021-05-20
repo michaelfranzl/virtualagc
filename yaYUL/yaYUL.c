@@ -108,6 +108,8 @@
  *             	2018-10-12 RSB  Added stuff associated with --simulation.
  *             	2021-01-24 RSB  Added --reconstruction.
  *             	2021-04-20 RSB  Added stuff associated with --ebcdic.
+ *             	2021-05-13 MKF  Set compiler function attribute 'visibility'
+ *                            	of main() to 'default*.
  */
 
 #include "yaYUL.h"
@@ -117,6 +119,7 @@
 #include <stdint.h>
 
 //#define VERSION(x) #x
+#define export __attribute__((visibility("default")))
 
 //-------------------------------------------------------------------------
 // Some global data.
@@ -204,7 +207,7 @@ Add(int n1, int n2)
 //-------------------------------------------------------------------------
 // The main program.
 
-int
+export int
 main(int argc, char *argv[])
 {
   int MaxPasses = 10;
