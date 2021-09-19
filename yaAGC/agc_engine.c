@@ -1334,17 +1334,11 @@ CounterDINC (agc_t *State, int Counter)
         case COUNTER_OPTXCMD:
           CpuWriteIO (State, 014, State->InputChannel[014] & ~02000);
           break;
-        // THRUST and EMSD switch off their enable bits and clear
-        // their state information bits
         case COUNTER_THRUST:
           CpuWriteIO (State, 014, State->InputChannel[014] & ~010);
-          State->ThrustPlusActive = 0;
-          State->ThrustMinusActive = 0;
           break;
         case COUNTER_EMSD:
           CpuWriteIO (State, 014, State->InputChannel[014] & ~020);
-          State->EMSPlusActive = 0;
-          State->EMSMinusActive = 0;
           break;
         }
     }
