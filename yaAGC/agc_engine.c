@@ -566,6 +566,19 @@ unsigned IoWriteCounts[01000];
 // directly is that the L and Q registers appear in both memory and i/o space,
 // at the same addresses. 
 
+// Low-level write to the input channel without side-effects.
+// Calls ChannelOutput only when the channel state was changed.
+void
+SetIO (agc_t * State, int Address, int Value)
+{
+  unsigned int LastChannelValue = State->InputChannel[Address];
+
+  State->InputChannel[Address] = Value;
+
+  if (LastChannelValue != Value)
+    ChannelOutput (State, Address, Value & 077777);
+}
+
 int
 ReadIO (agc_t * State, int Address)
 {
@@ -629,7 +642,7 @@ WriteIO (agc_t * State, int Address, int Value)
       Value = (State->InputChannel[Address] & 076000) | (Value & 001777);
     }
 
-  State->InputChannel[Address] = Value;
+  SetIO (State, Address, Value);
 }
 
 void
@@ -703,8 +716,7 @@ CpuWriteIO (agc_t * State, int Address, int Value)
       }
     }
 
-  WriteIO (State, Address, Value);
-  ChannelOutput (State, Address, Value & 077777);
+  SetIO (State, Address, Value);
 
   // 2005-06-25 RSB.  DOWNRUPT stuff.  I assume that the 20 ms. between
   // downlink transmissions is due to the time needed for transmitting,
@@ -722,6 +734,7 @@ CpuWriteIO (agc_t * State, int Address, int Value)
       State->Downlink = 0;
     }
 }
+
 
 //-----------------------------------------------------------------------------
 // This function sets the input voltage for the AGC, for integrated simulations
@@ -806,7 +819,7 @@ FindMemoryWord (agc_t * State, int Address12)
           // The program is trying to access unused fixed memory, which
           // will trigger a parity alarm.
           State->ParityFail = 1;
-          State->InputChannel[077] |= CH77_PARITY_FAIL;
+          SetIO (State, 077, State->InputChannel[077] | CH77_PARITY_FAIL);
         }
     }
   return Addr;
@@ -1297,39 +1310,39 @@ CounterDINC (agc_t *State, int Counter)
         case COUNTER_TIME6:
           State->InterruptRequests[RUPT_T6RUPT] = 1;
           // Triggering a T6RUPT disables T6 by clearing the CH13 bit
-          CpuWriteIO(State, 013, State->InputChannel[013] & 037777);
+          CpuWriteIO (State, 013, State->InputChannel[013] & 037777);
           break;
         case COUNTER_GYROCMD:
           // Gyro drive pulses have completed. Clear the active bit and
           // channel 14 bit 10.
           State->GyroDriveActive = 0;
-          State->InputChannel[014] &= ~01000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~01000);
           break;
         // CDU drive pulses simply clear their channel enable bit
         case COUNTER_CDUXCMD:
-          State->InputChannel[014] &= ~040000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~040000);
           break;
         case COUNTER_CDUYCMD:
-          State->InputChannel[014] &= ~020000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~020000);
           break;
         case COUNTER_CDUZCMD:
-          State->InputChannel[014] &= ~010000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~010000);
           break;
         case COUNTER_OPTYCMD:
-          State->InputChannel[014] &= ~04000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~04000);
           break;
         case COUNTER_OPTXCMD:
-          State->InputChannel[014] &= ~02000;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~02000);
           break;
         // THRUST and EMSD switch off their enable bits and clear
         // their state information bits
         case COUNTER_THRUST:
-          State->InputChannel[014] &= ~010;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~010);
           State->ThrustPlusActive = 0;
           State->ThrustMinusActive = 0;
           break;
         case COUNTER_EMSD:
-          State->InputChannel[014] &= ~020;
+          CpuWriteIO (State, 014, State->InputChannel[014] & ~020);
           State->EMSPlusActive = 0;
           State->EMSMinusActive = 0;
           break;
@@ -1473,7 +1486,6 @@ static void
 UpdateDSKY(agc_t *State)
 {
   unsigned LastChannel163 = State->DskyChannel163;
-
   State->DskyChannel163 &= ~(DSKY_KEY_REL | DSKY_VN_FLASH | DSKY_OPER_ERR | DSKY_RESTART | DSKY_STBY | DSKY_AGC_WARN | DSKY_TEMP);
 
   if (State->InputChannel[013] & 01000)
@@ -1504,7 +1516,7 @@ UpdateDSKY(agc_t *State)
       State->DskyChannel163 |= DSKY_AGC_WARN;
 
       // Set the AGC Warning input bit in channel 33
-      State->InputChannel[033] &= 057777;
+      SetIO (State, 033, State->InputChannel[033] & 057777);
     }
 
   // Flashing lights on the DSKY have a period of 1.28s, and a 75% duty cycle.
@@ -1677,7 +1689,7 @@ TimingSignalF05A(agc_t * State)
             // the voltage is back within limits. Trigger a GOJAM and set
             // the appropriate CH77 bit.
             State->RestartHold = 1;
-            State->InputChannel[077] |= CH77_VOLTAGE_FAIL;
+            SetIO (State, 077, State->InputChannel[077] | CH77_VOLTAGE_FAIL);
             CausedRestart = 1;
         }
     }
@@ -1818,7 +1830,7 @@ TimingSignalF05A(agc_t * State)
         {
             State->OutlinkStarting = 0;
             PulseOutput(State, OUTPUT_OUTLINK_ONE);
-            State->InputChannel[014] &= ~01;
+            CpuWriteIO (State, 014, State->InputChannel[014] & ~01);
         }
         else
           CounterRequest(State, COUNTER_OUTLINK, COUNTER_CELL_ZERO);
@@ -1829,7 +1841,7 @@ TimingSignalF05A(agc_t * State)
         if (State->AltStarting)
         {
             State->AltStarting = 0;
-            State->InputChannel[014] &= ~04;
+            CpuWriteIO (State, 014, State->InputChannel[014] & ~04);
             if (State->InputChannel[014] & 02)
               PulseOutput(State, OUTPUT_ALTRATE_ONE);
             else
@@ -1863,7 +1875,7 @@ TimingSignalF05B(agc_t * State)
 
     // Set the PIPA fail bit if any expected PIPA pulses were not received
     if (State->PipaMissX || State->PipaMissY || State->PipaMissZ)
-      State->InputChannel[033] &= ~010000;
+      CpuWriteIO (State, 033, State->InputChannel[033] & ~010000);
 
     // If any of the input traps are pending, generate a HANDRUPT and
     // disable the tripped trap.
@@ -1903,7 +1915,7 @@ TimingSignalF05B(agc_t * State)
         // channel enable bit.
         if (State->OutlinkActive)
         {
-            State->InputChannel[014] &= ~01;
+            CpuWriteIO (State, 014, State->InputChannel[014] & ~01);
             State->OutlinkActive = 0;
         }
         else if (State->InputChannel[014] & 01)
@@ -1914,7 +1926,7 @@ TimingSignalF05B(agc_t * State)
 
         if (State->AltActive)
         {
-            State->InputChannel[014] &= ~04;
+            CpuWriteIO (State, 014, State->InputChannel[014] & ~04);
             State->AltActive = 0;
         }
         else if (State->InputChannel[014] & 04)
@@ -1930,7 +1942,7 @@ TimingSignalF05B(agc_t * State)
         if (State->RadarSync)
         {
             State->InterruptRequests[RUPT_RADARUPT] = 1;
-            State->InputChannel[013] &= ~010;
+            CpuWriteIO (State, 013, State->InputChannel[013] & ~010);
             State->RadarGateCounter = 0;
             State->RadarSync = 0;
         }
@@ -1967,7 +1979,7 @@ TimingSignalF06B(agc_t * State)
           State->RHCCounts[i] = State->RHCVoltagemV[i] / RHC_MV_PER_COUNT;
 
         State->RHCPending = 0;
-        State->InputChannel[013] &= ~0400;
+        CpuWriteIO (State, 013, State->InputChannel[013] & ~0400);
     }
 }
 
@@ -1993,8 +2005,7 @@ TimingSignalF07B(agc_t * State)
     if (State->CounterLock)
     {
         State->GeneratedWarning = 1;
-        State->InputChannel[077] |= CH77_COUNTER_FAIL;
-        ChannelOutput(State, 077, State->InputChannel[077]);
+        SetIO (State, 077, State->InputChannel[077] | CH77_COUNTER_FAIL);
     }
 }
 
@@ -2105,7 +2116,7 @@ TimingSignalF10A(agc_t * State)
     if (!InhibitAlarms && (State->TCTrap || State->NoTC))
     {
         CausedRestart = 1;
-        State->InputChannel[077] |= CH77_TC_TRAP;
+        SetIO (State, 077, State->InputChannel[077] | CH77_TC_TRAP);
     }
 
     // If radar activity is enabled, advance the radar gate counter.
@@ -2155,7 +2166,7 @@ TimingSignalF12B(agc_t * State)
     if (((State->ScalerValue & (SCALER_FS14 | SCALER_FS13)) == SCALER_FS13)
         && (!InhibitAlarms && (State->RuptLock || State->NoRupt)))
     {
-        State->InputChannel[077] |= CH77_RUPT_LOCK;
+        SetIO (State, 077, State->InputChannel[077] | CH77_RUPT_LOCK);
         CausedRestart = 1;
     }
 
@@ -2209,7 +2220,7 @@ TimingSignalF17A(agc_t * State)
     // is still set
     if (!InhibitAlarms && State->NightWatchman)
     {
-        State->InputChannel[077] |= CH77_NIGHT_WATCHMAN;
+        SetIO (State, 077, State->InputChannel[077] | CH77_NIGHT_WATCHMAN);
         CausedRestart = 1;
 
         // The Night Watchman's monitor output is unique in that
@@ -2297,7 +2308,7 @@ TimingSignalF18B(agc_t * State)
     if (State->PipaNoXPlus || State->PipaNoXMinus ||
         State->PipaNoYPlus || State->PipaNoYMinus ||
         State->PipaNoZPlus || State->PipaNoZMinus)
-      State->InputChannel[033] &= ~010000;
+      SetIO (State, 033, State->InputChannel[033] & ~010000);
 }
 
 //-----------------------------------------------------------------------------
@@ -2587,7 +2598,7 @@ void PerformGOJAM(agc_t * State)
     CpuWriteIO(State, 014, 0);
 
     // Clear the UPLINK TOO FAST bit (11) in channel 33
-    State->InputChannel[033] |= 002000;
+    SetIO (State, 033, State->InputChannel[033] | 002000);
 
     // Clear channels 34 and 35, and don't let doing so generate a downrupt
     CpuWriteIO(State, 034, 0);
@@ -2601,11 +2612,8 @@ void PerformGOJAM(agc_t * State)
         State->GeneratedWarning = 1;
 
         if (State->RequestedCounter)
-          State->InputChannel[077] |= CH77_COUNTER_FAIL;
+          SetIO (State, 077, State->InputChannel[077] | CH77_COUNTER_FAIL);
     }
-
-    // Push any CH77 updates to the outside world
-    ChannelOutput(State, 077, State->InputChannel[077]);
 }
 
 //-----------------------------------------------------------------------------
