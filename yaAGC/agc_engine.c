@@ -1338,7 +1338,7 @@ CounterDINC (agc_t *State, int Counter)
   else if (040000 & i)			// Negative?
     {
       i = AddSP16(SignExtend(i), SignExtend(AGC_P1)) & 077777;
-      // Simualte MOUT effects
+      // Simulate MOUT effects
       switch (Counter)
         {
         case COUNTER_GYROCMD:
@@ -1373,7 +1373,7 @@ CounterDINC (agc_t *State, int Counter)
   else					// Positive?
     {
       i = AddSP16(SignExtend(i), SignExtend(AGC_M1)) & 077777;
-      // Simualte POUT effects
+      // Simulate POUT effects
       switch (Counter)
         {
         case COUNTER_GYROCMD:
@@ -1614,7 +1614,7 @@ SimulateDV(agc_t *State, uint16_t divisor)
 // FxxA and FxxB. Timing pulse FxxA is emitted when the stage transitions from
 // a 1 to a 0, and timing pulse FxxB is emitted when the stage transitions
 // from a 0 to a 1. The frequency of each stage can be calculated by the
-// forumula (1.024 kHz)/(2^x), where x is the number of the stage.
+// formula (102.4 kHz)/(2^x), where x is the number of the stage.
 //
 // Our implementation of the scaler omits stages 1 and 2, since they are too
 // fast and time things too finely detailed for an emulator to care about.
@@ -2325,7 +2325,7 @@ AdvanceScaler(agc_t * State)
         State->ScalerCounter -= SCALER_OVERFLOW;
         // Increment the scaler and update input channels 3 and 4. Channel
         // 4 shows the current value of scaler stages 6 through 19 (so it
-        // counts at 3200kHz) and channel 3 shows stage 20 through 33 (so
+        // counts at 3200 Hz) and channel 3 shows stage 20 through 33 (so
         // it counts once every 5.12 seconds).
         State->ScalerValue++;
         State->InputChannel[04] = (State->ScalerValue >> 3) & 037777;
