@@ -808,7 +808,7 @@ double GetUSP (int *Ptr, int Scale);
 
 // API for yaAGC-to-peripheral communications.
 void ChannelOutput (agc_t * State, int Channel, int Value);
-int ChannelInput (agc_t * State);
+void ChannelInput (agc_t * State);
 void ChannelRoutine (agc_t *State);
 void ChannelRoutineGeneric (void *State, void (*UpdatePeripherals) (void *, Client_t *));
 void PulseInput(agc_t * State, int SignalId);

@@ -100,9 +100,7 @@ ChannelOutput (agc_t * State, int Channel, int Value)
 //	   of 0 is returned; you can handle as much or as little data
 //	   of this kind in any given invocation; or
 //	2. A request for an "unprogrammed sequence" to automatically
-//	   increment or decrement a counter.  In this case a value of
-//	   1 is returned.  The function must return immediately upon
-//	   one of these requests, in order ot preserve system timing.
+//	   increment or decrement a counter.
 // The former type of data is supposed to be directly written to the
 // array State->InputChannel[], while the latter is supposed to call the
 // function UnprogrammedIncrement() to handle the actual incrementing.
@@ -126,8 +124,6 @@ ChannelOutput (agc_t * State, int Channel, int Value)
 int
 ChannelInput (agc_t *State)
 {
-  int RetVal = 0;
-
   if (!ChannelIsSetUp)
     ChannelSetup (State);
 
@@ -151,8 +147,6 @@ ChannelInput (agc_t *State)
   // Only registers 32 (octal) through 60 (octal) may actually used as
   // counters, and not all of them.  (Refer to the AGC assembly-language
   // manual at www.ibiblio.org/apollo/index.html.)
-
-  return (RetVal);
 }
 
 //----------------------------------------------------------------------

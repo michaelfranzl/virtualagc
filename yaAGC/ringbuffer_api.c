@@ -100,7 +100,7 @@ ChannelOutput (agc_t* State, int Channel, int Value)
  * The data is read from the ring buffer ringbuffer_in.
  * See also NullAPI.c
  */
-int
+void
 ChannelInput (agc_t* State)
 {
   if (!ChannelIsSetUp)
