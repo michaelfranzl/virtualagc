@@ -268,6 +268,11 @@ agc_engine_init (agc_t * State, const char *RomImage, const char *CoreDump,
   State->InputChannel[032] = 077777;
   State->InputChannel[033] = 077777;
 
+  // Push the initial state of the first 256 channels to all peripherals.
+  // yaAGC peripheral packets only support 8 bit channel numbers (256). See ParseIoPacket().
+  for (i = 0; i < (1 << 8); i++)
+    ChannelOutput(State, i, State->InputChannel[i]);
+
   // Clear erasable memory.
   for (Bank = 0; Bank < 8; Bank++)
     for (j = 0; j < 0400; j++)
