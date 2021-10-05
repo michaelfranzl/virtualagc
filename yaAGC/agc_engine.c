@@ -2542,7 +2542,7 @@ int HandleNextCounterCell(agc_t * State)
     State->CounterCell[i] = 0;
 
     // Determine the highest priority remaining counter cell for next time.
-    for (i = State->HighestPriorityCounter+1; i < NUM_COUNTERS; i++)
+    for (i = State->HighestPriorityCounter; i < NUM_COUNTERS; i++)
         if (State->CounterCell[i])
             break;
     State->HighestPriorityCounter = i;
